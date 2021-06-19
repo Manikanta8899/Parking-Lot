@@ -1,4 +1,4 @@
-package com.vikmanik.commands;
+package com.vikmanik;
 
 public class CommandConstants {
     public static String CREATE_PARKING_LOT = "create_parking_lot";
