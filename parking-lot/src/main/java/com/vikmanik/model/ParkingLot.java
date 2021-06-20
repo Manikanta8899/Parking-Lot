@@ -1,5 +1,6 @@
 package com.vikmanik.model;
 
+import com.vikmanik.exception.InvalidSlotException;
 import com.vikmanik.exception.ParkingLotException;
 import com.vikmanik.exception.SlotAlreadyOccupiedException;
 
@@ -23,6 +24,9 @@ public class ParkingLot {
         this.slots = new HashMap<>();
     }
     private Slot getSlot(Integer slotNumber) {
+        if (slotNumber > getCapacity() || slotNumber <= 0) {
+            throw new InvalidSlotException();
+        }
         if (!this.slots.containsKey(slotNumber)) {
             this.slots.put(slotNumber, new Slot(slotNumber));
         }
@@ -35,6 +39,12 @@ public class ParkingLot {
             throw new SlotAlreadyOccupiedException();
         }
         slot.assignCar(car);
+        return slot;
+    }
+
+    public Slot makeSlotFree(final Integer slotNumber) {
+        final Slot slot = getSlot(slotNumber);
+        slot.unassignCar();
         return slot;
     }
 }

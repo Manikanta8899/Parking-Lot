@@ -1,5 +1,7 @@
 package com.vikmanik.model;
 import static org.junit.Assert.*;
+
+import com.vikmanik.exception.InvalidSlotException;
 import com.vikmanik.exception.ParkingLotException;
 import com.vikmanik.exception.SlotAlreadyOccupiedException;
 import org.junit.Test;
@@ -41,5 +43,43 @@ public class ParkingLotTest {
         final ParkingLot parkingLot = new ParkingLot(100);
         parkingLot.park(testCar1, 1);
         parkingLot.park(testCar2, 1);
+    }
+
+    @Test(expected = InvalidSlotException.class)
+    public void testParkingAtSlotHigherThanCapacity() {
+        final Car testCar = new Car("test-car-no", "white");
+        final ParkingLot parkingLot = new ParkingLot(100);
+        parkingLot.park(testCar, 101);
+    }
+
+    @Test(expected = InvalidSlotException.class)
+    public void testParkingAtSlotInvalidSlot() {
+        final Car testCar = new Car("test-car-no", "white");
+        final ParkingLot parkingLot = new ParkingLot(100);
+        parkingLot.park(testCar, 0);
+    }
+
+    @Test
+    public void testMakingSlotFree() {
+        final Car testCar = new Car("test-car-no", "white");
+        final ParkingLot parkingLot = new ParkingLot(100);
+
+        final Slot parkedSlot = parkingLot.park(testCar, 10);
+        assertFalse(parkedSlot.isSlotFree());
+
+        final Slot freedSlot = parkingLot.makeSlotFree(10);
+        assertTrue(freedSlot.isSlotFree());
+    }
+
+    @Test(expected = InvalidSlotException.class)
+    public void testMakingSlotHigherThanCapacityFree() {
+        final ParkingLot parkingLot = new ParkingLot(100);
+        parkingLot.makeSlotFree(101);
+    }
+
+    @Test(expected = InvalidSlotException.class)
+    public void testMakingInvalidSlotFree() {
+        final ParkingLot parkingLot = new ParkingLot(100);
+        parkingLot.makeSlotFree(-1);
     }
 }

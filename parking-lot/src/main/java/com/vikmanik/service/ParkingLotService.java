@@ -23,8 +23,8 @@ public class ParkingLotService {
     public Integer park(final Car car) {
         validateParkingLotExists();
         final Integer nextFreeSlot = parkingStrategy.getNextSlot();
-        parkingStrategy.removeSlot(nextFreeSlot);
         parkingLot.park(car, nextFreeSlot);
+        parkingStrategy.removeSlot(nextFreeSlot);
         return nextFreeSlot;
     }
 
@@ -32,5 +32,10 @@ public class ParkingLotService {
         if (parkingLot == null) {
             throw new ParkingLotException("Parking lot does not exists to park.");
         }
+    }
+    public void makeSlotFree(final Integer slotNumber) {
+        validateParkingLotExists();
+        parkingLot.makeSlotFree(slotNumber);
+        parkingStrategy.addSlot(slotNumber);
     }
 }

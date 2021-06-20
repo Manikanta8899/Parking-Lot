@@ -5,6 +5,7 @@ import com.vikmanik.model.Command;
 import com.vikmanik.model.ParkingLot;
 import com.vikmanik.model.parking.strategy.NaturalOrderingParkingStrategy;
 import com.vikmanik.service.ParkingLotService;
+import com.vikmanik.validator.IntegerValidator;
 
 import java.util.List;
 
@@ -20,12 +21,7 @@ public class CreateParkingLotCommandExecutor extends CommandExecutor {
                 return false;
             }
 
-            try {
-                Integer.parseInt(params.get(0));
-                return true;
-            } catch (NumberFormatException exception) {
-                return false;
-            }
+            return IntegerValidator.isInteger(params.get(0));
         }
 
         @Override

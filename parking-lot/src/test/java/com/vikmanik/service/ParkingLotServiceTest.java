@@ -9,6 +9,7 @@ import com.vikmanik.model.Car;
 import com.vikmanik.model.ParkingLot;
 import com.vikmanik.model.parking.strategy.NaturalOrderingParkingStrategy;
 import com.vikmanik.model.parking.strategy.ParkingStrategy;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ParkingLotServiceTest {
@@ -16,6 +17,13 @@ public class ParkingLotServiceTest {
     private ParkingStrategy parkingStrategy;
     private ParkingLot parkingLot;
 
+    @Before
+    public void setUp() throws Exception {
+        parkingStrategy = mock(ParkingStrategy.class);
+        ;
+        parkingLot = mock(ParkingLot.class);
+        parkingLotService.createParkingLot(parkingLot, parkingStrategy);
+    }
     @Test(expected = ParkingLotException.class)
     public void testCreatingParkingLotWhenAlreadyExists() {
         final ParkingLotService parkingLotService = new ParkingLotService();
@@ -44,5 +52,18 @@ public class ParkingLotServiceTest {
         final ParkingLotService parkingLotService = new ParkingLotService();
         final Car testCar = new Car("test-car-no", "white");
         parkingLotService.park(testCar);
+    }
+
+    @Test
+    public void testFreeingSlot() {
+        parkingLotService.makeSlotFree(1);
+        verify(parkingStrategy).addSlot(1);
+        verify(parkingLot).makeSlotFree(1);
+    }
+
+    @Test(expected = ParkingLotException.class)
+    public void testFreeingSlotWithoutCreatingParkingLot() {
+        final ParkingLotService parkingLotService = new ParkingLotService();
+        parkingLotService.makeSlotFree(1);
     }
 }

@@ -19,4 +19,8 @@ public class Slot {
     public Car getParkedCar() {
         return parkedCar;
     }
+
+    public void unassignCar() {
+        this.parkedCar = null;
+    }
 }

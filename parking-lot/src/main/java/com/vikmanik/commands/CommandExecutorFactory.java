@@ -13,11 +13,12 @@ public class CommandExecutorFactory {
     public CommandExecutorFactory(final ParkingLotService parkingLotService) {
         commands.put(CreateParkingLotCommandExecutor.COMMAND_NAME, new CreateParkingLotCommandExecutor(parkingLotService));
         commands.put(ParkCommandExecutor.COMMAND_NAME, new ParkCommandExecutor(parkingLotService));
+        commands.put(LeaveCommandExecutor.COMMAND_NAME, new LeaveCommandExecutor(parkingLotService));
     }
 
     public CommandExecutor getCommandExecutor(final Command command) {
         CommandExecutor commandExecutor = commands.get(command.getCommandName());
-        if (command == null) {
+        if (commandExecutor == null) {
             throw new InvalidCommandException();
         }
         return commandExecutor;
