@@ -7,6 +7,13 @@ public class Slot {
     public Slot(Integer slotNumber) {
         this.slotNumber = slotNumber;
     }
+    public Integer getSlotNumber() {
+        return slotNumber;
+    }
+
+    public Car getParkedCar() {
+        return parkedCar;
+    }
 
     public boolean isSlotFree() {
         return parkedCar == null;
@@ -14,10 +21,6 @@ public class Slot {
 
     public void assignCar(Car car) {
         this.parkedCar = car;
-    }
-
-    public Car getParkedCar() {
-        return parkedCar;
     }
 
     public void unassignCar() {

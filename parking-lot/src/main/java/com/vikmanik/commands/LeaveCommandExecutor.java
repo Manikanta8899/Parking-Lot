@@ -1,5 +1,6 @@
 package com.vikmanik.commands;
 
+import com.vikmanik.OutputPrinter;
 import com.vikmanik.model.Command;
 import com.vikmanik.service.ParkingLotService;
 import com.vikmanik.validator.IntegerValidator;
@@ -9,8 +10,9 @@ import java.util.List;
 public class LeaveCommandExecutor extends CommandExecutor {
     public static String COMMAND_NAME = "leave";
 
-    public LeaveCommandExecutor(final ParkingLotService parkingLotService) {
-        super(parkingLotService);
+    public LeaveCommandExecutor(final ParkingLotService parkingLotService,
+                                final OutputPrinter outputPrinter) {
+        super(parkingLotService, outputPrinter);
     }
 
     @Override
@@ -26,5 +28,6 @@ public class LeaveCommandExecutor extends CommandExecutor {
     public void execute(Command command) {
         final int slotNum = Integer.parseInt(command.getParams().get(0));
         parkingLotService.makeSlotFree(slotNum);
+        outputPrinter.printWithNewLine("Slot number " + slotNum + " is free");
     }
 }

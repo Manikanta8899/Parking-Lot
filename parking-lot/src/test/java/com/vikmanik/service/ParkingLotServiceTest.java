@@ -3,14 +3,20 @@ package com.vikmanik.service;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
 
 import com.vikmanik.exception.ParkingLotException;
 import com.vikmanik.model.Car;
 import com.vikmanik.model.ParkingLot;
+import com.vikmanik.model.Slot;
 import com.vikmanik.model.parking.strategy.NaturalOrderingParkingStrategy;
 import com.vikmanik.model.parking.strategy.ParkingStrategy;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ParkingLotServiceTest {
     private ParkingLotService parkingLotService = new ParkingLotService();
@@ -24,6 +30,7 @@ public class ParkingLotServiceTest {
         parkingLot = mock(ParkingLot.class);
         parkingLotService.createParkingLot(parkingLot, parkingStrategy);
     }
+
     @Test(expected = ParkingLotException.class)
     public void testCreatingParkingLotWhenAlreadyExists() {
         final ParkingLotService parkingLotService = new ParkingLotService();
@@ -65,5 +72,74 @@ public class ParkingLotServiceTest {
     public void testFreeingSlotWithoutCreatingParkingLot() {
         final ParkingLotService parkingLotService = new ParkingLotService();
         parkingLotService.makeSlotFree(1);
+    }
+
+    @Test
+    public void testOccupiedSlots() {
+        final Map<Integer, Slot> allSlots = new HashMap<>();
+        final Slot slot1 = new Slot(1);
+        final Slot slot2 = new Slot(2);
+        slot2.assignCar(new Car("test-car-no1", "white"));
+        final Slot slot3 = new Slot(3);
+        final Slot slot4 = new Slot(4);
+        slot4.assignCar(new Car("test-car-no2", "white"));
+
+        allSlots.put(1, slot1);
+        allSlots.put(2, slot2);
+        allSlots.put(3, slot3);
+        allSlots.put(4, slot4);
+
+        when(parkingLot.getSlots()).thenReturn(allSlots);
+        when(parkingLot.getCapacity()).thenReturn(10);
+
+        final List<Slot> occupiedSlots = parkingLotService.getOccupiedSlots();
+        assertEquals(2, occupiedSlots.size());
+        assertEquals(slot2, occupiedSlots.get(0));
+        assertEquals(slot4, occupiedSlots.get(1));
+    }
+
+    @Test
+    public void testGetSlotsForAParticularColor() {
+        final Map<Integer, Slot> allSlots = new HashMap<>();
+        final Slot slot1 = new Slot(1);
+        slot1.assignCar(new Car("test-car-no1", "blue"));
+        final Slot slot2 = new Slot(2);
+        slot2.assignCar(new Car("test-car-no2", "white"));
+        final Slot slot3 = new Slot(3);
+        final Slot slot4 = new Slot(4);
+        slot4.assignCar(new Car("test-car-no3", "white"));
+
+        allSlots.put(1, slot1);
+        allSlots.put(2, slot2);
+        allSlots.put(3, slot3);
+        allSlots.put(4, slot4);
+
+        when(parkingLot.getSlots()).thenReturn(allSlots);
+        when(parkingLot.getCapacity()).thenReturn(10);
+
+        final List<Slot> slots = parkingLotService.getSlotsForColor("white");
+        assertEquals(2, slots.size());
+        assertEquals(slot2, slots.get(0));
+        assertEquals(slot4, slots.get(1));
+    }
+
+    @Test
+    public void testGetSlotsForAParticularCarColorWhenNoCarMatches() {
+        final Map<Integer, Slot> allSlots = new HashMap<>();
+        final Slot slot1 = new Slot(1);
+        slot1.assignCar(new Car("test-car-no1", "blue"));
+        final Slot slot2 = new Slot(2);
+        final Slot slot3 = new Slot(3);
+        slot3.assignCar(new Car("test-car-no2", "red"));
+
+        allSlots.put(1, slot1);
+        allSlots.put(2, slot2);
+        allSlots.put(3, slot3);
+
+        when(parkingLot.getSlots()).thenReturn(allSlots);
+        when(parkingLot.getCapacity()).thenReturn(10);
+
+        final List<Slot> slots = parkingLotService.getSlotsForColor("white");
+        assertEquals(0, slots.size());
     }
 }

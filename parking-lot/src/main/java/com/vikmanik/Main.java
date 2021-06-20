@@ -12,43 +12,16 @@ import java.io.*;
 public class Main {
     private static String EXIT = "exit";
     public static void main(String[] args) throws IOException {
-        OutputPrinter.welcome();
+        final OutputPrinter outputPrinter = new OutputPrinter();
         final ParkingLotService parkingLotService = new ParkingLotService();
         final CommandExecutorFactory commandExecutorFactory =
                 new CommandExecutorFactory(parkingLotService);
 
-
         if (isInteractiveMode(args)) {
-            OutputPrinter.usage();
-            while (true) {
-                final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                final String input = reader.readLine();
-                final Command command = new Command(input);
-                if (command.getCommandName().equals(EXIT)) {
-                    OutputPrinter.endInteractive();
-                    break;
-                }
-                processCommand(commandExecutorFactory, command);
-            }
+            runInteractiveMode(outputPrinter, commandExecutorFactory);
 
         } else if (isFileInputMode(args)) {
-            final String fileName = args[0];
-            final File file = new File(fileName);
-            final BufferedReader reader;
-            try {
-                reader = new BufferedReader(new FileReader(file));
-            } catch (FileNotFoundException e) {
-                OutputPrinter.invalidFile();
-                return;
-            }
-
-            String input = reader.readLine();
-            while (input != null) {
-                final Command command = new Command(input);
-                processCommand(commandExecutorFactory, command);
-            }
-        } else {
-            throw new InvalidModeException();
+            runInputFileMode(args[0], outputPrinter, commandExecutorFactory);
         }
     }
 
@@ -71,5 +44,39 @@ public class Main {
         return args.length == 0;
     }
 
+    private static void runInteractiveMode(OutputPrinter outputPrinter,
+                                           CommandExecutorFactory commandExecutorFactory) throws IOException {
+        outputPrinter.welcome();
+        while (true) {
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            final String input = reader.readLine();
+            System.out.println(input);
+            final Command command = new Command(input);
+            if (command.getCommandName().equals(EXIT)) {
+                outputPrinter.end();
+                break;
+            }
+            processCommand(commandExecutorFactory, command);
+        }
+    }
+
+    private static void runInputFileMode(String arg, OutputPrinter outputPrinter,
+                                         CommandExecutorFactory commandExecutorFactory) throws IOException {
+        final String fileName = arg;
+        final File file = new File(fileName);
+        final BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException e) {
+            outputPrinter.invalidFile();
+            return;
+        }
+
+        String input = reader.readLine();
+        while (input != null) {
+            final Command command = new Command(input);
+            processCommand(commandExecutorFactory, command);
+        }
+    }
 
 }

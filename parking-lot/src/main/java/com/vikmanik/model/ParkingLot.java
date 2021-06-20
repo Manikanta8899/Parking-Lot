@@ -23,14 +23,18 @@ public class ParkingLot {
         this.capacity = capacity;
         this.slots = new HashMap<>();
     }
+    public Map<Integer, Slot> getSlots() {
+        return slots;
+    }
     private Slot getSlot(Integer slotNumber) {
         if (slotNumber > getCapacity() || slotNumber <= 0) {
             throw new InvalidSlotException();
         }
-        if (!this.slots.containsKey(slotNumber)) {
-            this.slots.put(slotNumber, new Slot(slotNumber));
+        final Map<Integer, Slot> allSlots = getSlots();
+        if (!allSlots.containsKey(slotNumber)) {
+            allSlots.put(slotNumber, new Slot(slotNumber));
         }
-        return this.slots.get(slotNumber);
+        return allSlots.get(slotNumber);
     }
 
     public Slot park(final Car car, final Integer slotNumber) {

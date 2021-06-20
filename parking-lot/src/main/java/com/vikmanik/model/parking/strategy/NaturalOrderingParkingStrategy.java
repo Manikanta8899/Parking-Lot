@@ -1,5 +1,7 @@
 package com.vikmanik.model.parking.strategy;
 
+import com.vikmanik.exception.NoFreeSlotAvailableException;
+
 import java.util.TreeSet;
 
 public class NaturalOrderingParkingStrategy implements ParkingStrategy{
@@ -21,6 +23,9 @@ public class NaturalOrderingParkingStrategy implements ParkingStrategy{
 
     @Override
     public Integer getNextSlot() {
+        if (slotTreeSet.isEmpty()) {
+            throw new NoFreeSlotAvailableException();
+        }
         return this.slotTreeSet.first();
     }
 }

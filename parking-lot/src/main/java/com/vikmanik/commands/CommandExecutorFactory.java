@@ -1,5 +1,6 @@
 package com.vikmanik.commands;
 
+import com.vikmanik.OutputPrinter;
 import com.vikmanik.exception.InvalidCommandException;
 import com.vikmanik.model.Command;
 import com.vikmanik.service.ParkingLotService;
@@ -8,16 +9,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommandExecutorFactory {
-    Map<String, CommandExecutor> commands = new HashMap<String, CommandExecutor>();
+    private Map<String, CommandExecutor> commands = new HashMap<>();
 
     public CommandExecutorFactory(final ParkingLotService parkingLotService) {
-        commands.put(CreateParkingLotCommandExecutor.COMMAND_NAME, new CreateParkingLotCommandExecutor(parkingLotService));
-        commands.put(ParkCommandExecutor.COMMAND_NAME, new ParkCommandExecutor(parkingLotService));
-        commands.put(LeaveCommandExecutor.COMMAND_NAME, new LeaveCommandExecutor(parkingLotService));
+        final OutputPrinter outputPrinter = new OutputPrinter();
+        commands.put(CreateParkingLotCommandExecutor.COMMAND_NAME, new CreateParkingLotCommandExecutor(parkingLotService,outputPrinter));
+        commands.put(ParkCommandExecutor.COMMAND_NAME, new ParkCommandExecutor(parkingLotService,outputPrinter));
+        commands.put(LeaveCommandExecutor.COMMAND_NAME, new LeaveCommandExecutor(parkingLotService,outputPrinter));
+        commands.put(StatusCommandExecutor.COMMAND_NAME, new StatusCommandExecutor(parkingLotService,outputPrinter));
+        commands.put(ColorToRegNumberCommandExecutor.COMMAND_NAME,new ColorToRegNumberCommandExecutor(parkingLotService, outputPrinter));
+        commands.put(
+                ColorToSlotNumberCommandExecutor.COMMAND_NAME,
+                new ColorToSlotNumberCommandExecutor(parkingLotService, outputPrinter));
+        commands.put(
+                SlotForRegNumberCommandExecutor.COMMAND_NAME,
+                new SlotForRegNumberCommandExecutor(parkingLotService, outputPrinter));
     }
 
     public CommandExecutor getCommandExecutor(final Command command) {
-        CommandExecutor commandExecutor = commands.get(command.getCommandName());
+        final CommandExecutor commandExecutor = commands.get(command.getCommandName());
         if (commandExecutor == null) {
             throw new InvalidCommandException();
         }
