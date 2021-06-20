@@ -1,6 +1,7 @@
 package com.vikmanik;
-import static  com.vikmanik.CommandConstants.EXIT;
 
+import com.vikmanik.commands.CommandExecutor;
+import com.vikmanik.commands.CommandExecutorFactory;
 import com.vikmanik.exception.InvalidCommandException;
 import com.vikmanik.exception.InvalidModeException;
 import com.vikmanik.model.Command;
@@ -9,6 +10,7 @@ import com.vikmanik.service.ParkingLotService;
 import java.io.*;
 
 public class Main {
+    private static String EXIT = "exit";
     public static void main(String[] args) throws IOException {
         OutputPrinter.welcome();
         final ParkingLotService parkingLotService = new ParkingLotService();

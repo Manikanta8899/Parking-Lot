@@ -1,4 +1,4 @@
-package com.vikmanik;
+package com.vikmanik.commands;
 
 import com.vikmanik.model.Command;
 import com.vikmanik.service.ParkingLotService;

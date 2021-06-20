@@ -1,12 +1,15 @@
-package com.vikmanik;
+package com.vikmanik.commands;
 
+import com.vikmanik.commands.CommandExecutor;
 import com.vikmanik.model.Command;
+import com.vikmanik.model.ParkingLot;
 import com.vikmanik.model.parking.strategy.NaturalOrderingParkingStrategy;
 import com.vikmanik.service.ParkingLotService;
 
 import java.util.List;
 
-public class CreateParkingLotCommandExecutor extends CommandExecutor{
+public class CreateParkingLotCommandExecutor extends CommandExecutor {
+    public static String COMMAND_NAME = "create_parking_lot";
     public CreateParkingLotCommandExecutor(final ParkingLotService parkingLotService) {
         super(parkingLotService);
     }
@@ -28,6 +31,6 @@ public class CreateParkingLotCommandExecutor extends CommandExecutor{
         @Override
         public void execute(final Command command) {
             final int parkingLotCapacity = Integer.parseInt(command.getParams().get(0));
-            parkingLotService.createParkingLot(parkingLotCapacity, new NaturalOrderingParkingStrategy());
+            parkingLotService.createParkingLot(new ParkingLot(parkingLotCapacity), new NaturalOrderingParkingStrategy());
         }
 }
